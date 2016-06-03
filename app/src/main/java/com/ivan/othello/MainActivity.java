@@ -2,6 +2,7 @@ package com.ivan.othello;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MotionEvent;
 import android.view.WindowManager;
 
 public class MainActivity extends AppCompatActivity {
@@ -14,5 +15,13 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
+    }
+    @Override
+     public boolean onTouchEvent(MotionEvent event){
+        float a=0,b=0;
+        MainBoard mb=(MainBoard)findViewById(R.id.mainboard);
+
+        mb.TouchFunc(event, a, b);
+        return true;
     }
 }
