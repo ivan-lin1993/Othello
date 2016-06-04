@@ -1,8 +1,6 @@
 package com.ivan.othello;
 
 import android.content.Context;
-import android.view.View;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,9 +79,8 @@ public class Game {
     }
     private boolean isWall(int ind){
         int[] wall={0,1,2,3,4,5,6,7,8,15,16,23,24,31,32,39,40,47,48,55,56,57,58,59,60,61,62,63};
-        int length=wall.length;
-        for (int i=0;i<length;i++){
-            if(ind==wall[i]){
+        for (int aWall : wall) {
+            if (ind == aWall) {
                 return true;
             }
         }
@@ -91,9 +88,8 @@ public class Game {
     }
     private boolean isUpWall(int ind){
         int[] wall={0,1,2,3,4,5,6,7};
-        int length=wall.length;
-        for (int i=0;i<length;i++){
-            if(ind==wall[i]){
+        for (int aWall : wall) {
+            if (ind == aWall) {
                 return true;
             }
         }
@@ -101,9 +97,8 @@ public class Game {
     }
     private boolean isDownWall(int ind){
         int[] wall={56,57,58,59,60,61,62,63};
-        int length=wall.length;
-        for (int i=0;i<length;i++){
-            if(ind==wall[i]){
+        for (int aWall : wall) {
+            if (ind == aWall) {
                 return true;
             }
         }
@@ -111,9 +106,8 @@ public class Game {
     }
     private boolean isRightWall(int ind){
         int[] wall={7,15,23,31,39,47,55,63};
-        int length=wall.length;
-        for (int i=0;i<length;i++){
-            if(ind==wall[i]){
+        for (int aWall : wall) {
+            if (ind == aWall) {
                 return true;
             }
         }
@@ -121,9 +115,8 @@ public class Game {
     }
     private boolean isLeftWall(int ind){
         int[] wall={0,8,16,24,32,40,48,56};
-        int length=wall.length;
-        for (int i=0;i<length;i++){
-            if(ind==wall[i]){
+        for (int aWall : wall) {
+            if (ind == aWall) {
                 return true;
             }
         }
@@ -133,9 +126,9 @@ public class Game {
         if(!gameover){
             if(SetAble(ind)){
                 //反悔
-
+                regreteTable.push(table.clone());
                 regreteSideB.push(nowPresentB);
-                regreteTable.push(table);
+
 
                 if(nowPresentB) table[ind]='B';
                 else table[ind]='W';
@@ -154,8 +147,16 @@ public class Game {
         }
     }
     public void Regret(){
-        table=regreteTable.pop();
-        nowPresentB=regreteSideB.pop();
+        if(regreteTable.size()>0){
+            for(int i=0;i<table.length;i++){
+                table[i]=regreteTable.peek()[i];
+            }
+            regreteTable.pop();
+            nowPresentB = regreteSideB.pop();
+            SetableList();
+        }
+
+
         showToast();
     }
     private void showToast(){
@@ -295,8 +296,7 @@ public class Game {
         else return 'W';
     }
     public boolean isFill(int ind){
-        if(table[ind]!=' ') return true;
-        else return false;
+        return table[ind] != ' ';
     }
     public char winner(){
         return win;
