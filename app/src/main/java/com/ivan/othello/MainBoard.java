@@ -24,6 +24,7 @@ public class MainBoard extends View{
     private Point[] vupPoint,vdownPoint;
     private CellBoard cellBoard;
     private Game game;
+    private Context thisContext;
     public MainBoard(Context context) {
         super(context);
         init();
@@ -36,10 +37,15 @@ public class MainBoard extends View{
         super(context, attrs, defStyleAttr);
         init();
     }
-    public void init()
+
+    private void init()
     {
         paint=new Paint();
         game=new Game();
+        game.setContext(thisContext);
+    }
+    public void setContext(Context c){
+        thisContext=c;
     }
     @Override
     protected void onDraw(Canvas canvas){
@@ -54,8 +60,12 @@ public class MainBoard extends View{
         buffer=new Canvas(bitmap);
 
         calculateLinePlacements();
+        drawAll();
+    }
+    private void drawAll(){
         drawBoard();
         drawWB();
+        drawCanSet();
     }
     private void drawBoard(){
         //background
@@ -100,8 +110,8 @@ public class MainBoard extends View{
         cellBoard=new CellBoard(cellW,cellH,boardTop);
     }
     private void drawWB(){
-        buffer.drawColor(0, PorterDuff.Mode.CLEAR);
-        drawBoard();
+        //buffer.drawColor(0, PorterDuff.Mode.CLEAR);
+        //drawBoard();
         for(int i=0;i<64;i++){
             char present=game.getPresent(i);
             RectF position=cellBoard.getRect(i);
@@ -116,9 +126,6 @@ public class MainBoard extends View{
                 buffer.drawOval(position, paint);
             }
         }
-
-        drawCanSet();
-
         invalidate();
     }
     private void drawCanSet(){
@@ -149,7 +156,7 @@ public class MainBoard extends View{
                 buffer.drawColor(0, PorterDuff.Mode.CLEAR);
                 //char present=game.getPresent(cellBoard.getCellInd(a,b));
                 game.play(setID);
-                drawWB();
+                drawAll();
                 //nowAI=!nowAI;
             }
             /*
@@ -186,6 +193,14 @@ public class MainBoard extends View{
             invalidate();
         }
         return true;
+    }
+    public void Restart(){
+        game=new Game();
+        drawAll();
+    }
+    public void Regret(){
+        game.Regret();
+        drawAll();
     }
     class CellBoard{
         private int w;

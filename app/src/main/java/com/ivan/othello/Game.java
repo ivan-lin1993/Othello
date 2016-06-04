@@ -1,7 +1,12 @@
 package com.ivan.othello;
 
+import android.content.Context;
+import android.view.View;
+import android.widget.Toast;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 /**
  * Created by Ivan on 2016/6/3.
@@ -14,11 +19,15 @@ public class Game {
     private boolean gameover=false;
     private int[] direct={-8,-7,1,9,8,7,-1,-9};
     private int total_direct_num=8;
+    private Context mainContext;
 
+    private List<Integer> setAble = new ArrayList<>();
+    private Stack<char[]> regreteTable=new Stack<>();
+    private Stack<Boolean> regreteSideB=new Stack<>();
+    //private List<char[]> regreteTable=new ArrayList<>();
+    //private List<Character> regreteSide=new ArrayList<>();
+    private int ind;
 
-    private List<Integer> setAble = new ArrayList<Integer>();
-    private List<Integer> setrevInd = new ArrayList<Integer>();
-    private List<Integer> setrevDir =new ArrayList<Integer>();
     Game(){
         GameInitial();
     }
@@ -40,9 +49,12 @@ public class Game {
         table[36]='W';
         table[28]='B';
         table[35]='B';
+
         SetableList();
     }
-
+    public void setContext(Context c){
+        mainContext=c;
+    }
     public boolean isGameOver(){
         return gameover;
 
@@ -120,6 +132,11 @@ public class Game {
     public void play(int ind){
         if(!gameover){
             if(SetAble(ind)){
+                //反悔
+
+                regreteSideB.push(nowPresentB);
+                regreteTable.push(table);
+
                 if(nowPresentB) table[ind]='B';
                 else table[ind]='W';
                 Reverse(ind);
@@ -136,8 +153,13 @@ public class Game {
             }
         }
     }
+    public void Regret(){
+        table=regreteTable.pop();
+        nowPresentB=regreteSideB.pop();
+        showToast();
+    }
     private void showToast(){
-
+        //Toast.makeText(mainContext,nowPresentB ? "黑":"白" +"子繼續",Toast.LENGTH_SHORT);
     }
     private boolean SetAble(int ind)
     {
@@ -163,8 +185,6 @@ public class Game {
     private void SetableList(){
         char me='W',opp='B';
         setAble.clear();
-        setrevInd.clear();
-        setrevDir.clear();
         if(nowPresentB){
             me='B';
             opp='W';
@@ -187,8 +207,8 @@ public class Game {
                                     if(table[step]==' ')
                                     {
                                         setAble.add(step);
-                                        setrevInd.add(step);
-                                        setrevDir.add(j);
+                                        //setrevInd.add(step);
+                                        //setrevDir.add(j);
                                         break;
                                     }
                                     else if(table[step]==me) break;//遇到自記就break
