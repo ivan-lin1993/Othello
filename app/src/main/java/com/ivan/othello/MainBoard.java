@@ -23,49 +23,50 @@ public class MainBoard extends View{
     private Point[] hleftPoint,hrightPoint;
     private Point[] vupPoint,vdownPoint;
     private CellBoard cellBoard;
-    private Game game;
+//    private Game game;
     private Context thisContext;
     public MainBoard(Context context) {
         super(context);
+        thisContext=context;
         init();
     }
     public MainBoard(Context context, AttributeSet attrs) {
         super(context, attrs);
+        thisContext=context;
         init();
     }
     public MainBoard(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        thisContext=context;
         init();
     }
 
     private void init()
     {
         paint=new Paint();
-        game=new Game();
-        game.setContext(thisContext);
-    }
-    public void setContext(Context c){
-        thisContext=c;
+        //game=new Game(thisContext);
     }
     @Override
     protected void onDraw(Canvas canvas){
         canvas.drawBitmap(bitmap, 0, 0, paint);
     }
-    @Override
-    protected void onMeasure(int widthMeasureSpec,int heightMeasureSpec){
-        h=View.MeasureSpec.getSize(heightMeasureSpec);
-        w=View.MeasureSpec.getSize(widthMeasureSpec);
+    public void setViewDisplay(int h,int w){
+        this.h=h;
+        this.w=w;
         setMeasuredDimension(w,h);
         bitmap=Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
         buffer=new Canvas(bitmap);
-
         calculateLinePlacements();
-        drawAll();
     }
-    private void drawAll(){
-        drawBoard();
-        drawWB();
-        drawCanSet();
+    public void drawAllBoard(char []table,int []setalbe,char nowP){
+        try{
+            drawBoard();
+            drawWB(table);
+            drawCanSet(setalbe,nowP);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
     }
     private void drawBoard(){
         //background
@@ -109,11 +110,11 @@ public class MainBoard extends View{
         }
         cellBoard=new CellBoard(cellW,cellH,boardTop);
     }
-    private void drawWB(){
+    private void drawWB(char []table){
         //buffer.drawColor(0, PorterDuff.Mode.CLEAR);
         //drawBoard();
         for(int i=0;i<64;i++){
-            char present=game.getPresent(i);
+            char present=table[i];
             RectF position=cellBoard.getRect(i);
             if(present=='W'){
                 paint.setColor(Color.WHITE);
@@ -128,35 +129,32 @@ public class MainBoard extends View{
         }
         invalidate();
     }
-    private void drawCanSet(){
+    private void drawCanSet(int []setAbleList,char nowPresentCHAR){
         float offset=45;
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(15);
-        if(game.nowPresentCHAR()=='W'){
+        if(nowPresentCHAR=='W'){
             paint.setColor(Color.WHITE);
         }
         else paint.setColor(Color.BLACK);
-        int size=game.getSetAbleListSize();
+        int size=setAbleList.length;
         for (int i=0;i<size;i++){
-            RectF rect = cellBoard.getRect(game.getSetAbleList(i));
+            RectF rect = cellBoard.getRect(setAbleList[i]);
             buffer.drawOval(rect.left+offset, rect.top + offset, rect.right-offset, rect.bottom-offset, paint);
         }
 
     }
-    public boolean TouchFunc (MotionEvent event,float a,float b){
-        //float x=event.getX();
-        //float y=event.getY();
+    public int TouchFunc (MotionEvent event){
+        float a,b;
+        int setID=-1;
         a=event.getX();
         b=event.getY();
 
         if(event.getAction()== MotionEvent.ACTION_UP){
-            int a1=(int)a,b1=(int)b;
-            int setID=cellBoard.getCellInd(a, b);
+            setID=cellBoard.getCellInd(a, b);
             if(setID!=-1){
                 buffer.drawColor(0, PorterDuff.Mode.CLEAR);
                 //char present=game.getPresent(cellBoard.getCellInd(a,b));
-                game.play(setID);
-                drawAll();
                 //nowAI=!nowAI;
             }
             /*
@@ -192,15 +190,7 @@ public class MainBoard extends View{
 			*/
             invalidate();
         }
-        return true;
-    }
-    public void Restart(){
-        game=new Game();
-        drawAll();
-    }
-    public void Regret(){
-        game.Regret();
-        drawAll();
+        return setID;
     }
     class CellBoard{
         private int w;
@@ -245,17 +235,17 @@ public class MainBoard extends View{
             }
             return -1;
         }
-        public RectF getCellToFill(float x,float y){
-            for (Cell bp: position){
-
-                if(bp.contains(x, y)){//&&!game.isFill(bp.ind)){
-                    RectF retCell=new RectF(bp);
-                    game.play(bp.ind);
-                    return retCell;
-                }
-            }
-            return null;
-        }
+//        public RectF getCellToFill(float x,float y){
+//            for (Cell bp: position){
+//
+//                if(bp.contains(x, y)){//&&!game.isFill(bp.ind)){
+//                    RectF retCell=new RectF(bp);
+//                    game.play(bp.ind);
+//                    return retCell;
+//                }
+//            }
+//            return null;
+//        }
         public float getPositionX(int ind){
             return position[ind].centerX();
         }

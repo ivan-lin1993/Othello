@@ -1,6 +1,7 @@
 package com.ivan.othello;
 
 import android.content.Context;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,42 +21,43 @@ public class Game {
     private Context mainContext;
 
     private List<Integer> setAble = new ArrayList<>();
-    private Stack<char[]> regreteTable=new Stack<>();
-    private Stack<Boolean> regreteSideB=new Stack<>();
-    //private List<char[]> regreteTable=new ArrayList<>();
-    //private List<Character> regreteSide=new ArrayList<>();
+    private GameLog gameLog;
     private int ind;
 
-    Game(){
+    Game(Context context){
+        mainContext=context;
         GameInitial();
     }
 
     public void GameInitial(){
+        gameLog=new GameLog();
         win=' ';
         nowPresentB=true;
         for (int i=0;i<cellnum;i++){
             table[i]=' ';
         }
         gameover=false;
-//		table[59]='B';
-//		table[51]='W';
-//		table[43]='W';
-//		table[61]='B';
-//		table[53]='W';
-        //table[27]='B';
+//        table[0]='W';
+//        table[1]='W';
+//        table[8]='W';
+//        table[9]='B';
+//        table[27]='B';
+//        table[32]='W';
+//        table[40]='B';
         table[27]='W';
         table[36]='W';
         table[28]='B';
         table[35]='B';
-
+        gameLog.pushTableToList(table.clone());
+        gameLog.pushSideToList(nowPresentB);
         SetableList();
-    }
-    public void setContext(Context c){
-        mainContext=c;
     }
     public boolean isGameOver(){
         return gameover;
 
+    }
+    public char[] getTable(){
+        return table;
     }
     boolean isFull(){
         for (int i=0;i<cellnum;i++){
@@ -126,8 +128,8 @@ public class Game {
         if(!gameover){
             if(SetAble(ind)){
                 //反悔
-                regreteTable.push(table.clone());
-                regreteSideB.push(nowPresentB);
+                gameLog.pushTableToList(table.clone());
+                gameLog.pushSideToList(nowPresentB);
 
 
                 if(nowPresentB) table[ind]='B';
@@ -138,29 +140,23 @@ public class Game {
         }
         SetableList();
         if(this.getSetAbleListSize()==0){
-            showToast();
+
             Turn();
             SetableList();
             if(getSetAbleListSize()==0){
                 gameover=true;
             }
+            else Toast.makeText(mainContext,"沒有可下的區域",Toast.LENGTH_SHORT).show();
         }
     }
     public void Regret(){
-        if(regreteTable.size()>0){
-            for(int i=0;i<table.length;i++){
-                table[i]=regreteTable.peek()[i];
-            }
-            regreteTable.pop();
-            nowPresentB = regreteSideB.pop();
+        if(gameLog.isPopAble()){
+            table=gameLog.popTableFromList();
+            nowPresentB=gameLog.popSideFromList();
+            Toast.makeText(mainContext,"Regret!",Toast.LENGTH_SHORT).show();
+            gameover=false;
             SetableList();
         }
-
-
-        showToast();
-    }
-    private void showToast(){
-        //Toast.makeText(mainContext,nowPresentB ? "黑":"白" +"子繼續",Toast.LENGTH_SHORT);
     }
     private boolean SetAble(int ind)
     {
@@ -173,15 +169,15 @@ public class Game {
         }
         return false;
     }
-    public String showScore(char color){
-        Integer count=0;
+    public int showScore(char color){
+        int count=0;
         for (int i=0;i<64;i++){
             if(table[i]==color){
                 count++;
             }
         }
 
-        return count.toString();
+        return count;
     }
     private void SetableList(){
         char me='W',opp='B';
@@ -270,10 +266,18 @@ public class Game {
         }
         return true;
     }
-    public int getSetAbleList(int ind){
+    public int[] getSetAbleList(){
+        int len=setAble.size();
+        int[] list=new int[len];
+        for (int i=0;i<len;i++){
+            list[i]=setAble.get(i);
+        }
+        return list;
+    }
+    private int getSetAbleList(int ind){
         return setAble.get(ind);
     }
-    public int getSetAbleListSize(){
+    private int getSetAbleListSize(){
         return setAble.size();
     }
     private void Turn(){
