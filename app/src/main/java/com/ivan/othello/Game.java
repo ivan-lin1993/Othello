@@ -5,7 +5,6 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 
 /**
  * Created by Ivan on 2016/6/3.
@@ -57,7 +56,7 @@ public class Game {
 
     }
     public char[] getTable(){
-        return table;
+        return table.clone();
     }
     boolean isFull(){
         for (int i=0;i<cellnum;i++){
@@ -134,7 +133,7 @@ public class Game {
 
                 if(nowPresentB) table[ind]='B';
                 else table[ind]='W';
-                Reverse(ind);
+                table=Reverse(ind,nowPresentCHAR(),table.clone());
                 Turn();
             }
         }
@@ -176,7 +175,15 @@ public class Game {
                 count++;
             }
         }
-
+        return count;
+    }
+    public int showScore(char color,char []table){
+        int count=0;
+        for (int i=0;i<64;i++){
+            if(table[i]==color){
+                count++;
+            }
+        }
         return count;
     }
     private void SetableList(){
@@ -219,36 +226,33 @@ public class Game {
             }
         }
     }
-    private void Reverse(int ind)
+    public char[] Reverse(int ind,char state,char c_table[])
     {
         char me='W',opp='B';
-        if(nowPresentB){
+        if(state=='B'){
             me='B';
             opp='W';
         }
         for (int i=0;i<total_direct_num;i++){
             if(stepforward(ind,i)){
                 int step=ind+direct[i];
-                if(table[step]==opp){
+                if(c_table[step]==opp){
                     while(stepforward(step,i)){
                         step+=direct[i];
-                        if(table[step]==me){ //翻轉
+                        if(c_table[step]==me){ //翻轉
                             int tmp=ind+direct[i];
                             while(tmp!=step){
-                                table[tmp]=me;
+                                c_table[tmp]=me;
                                 tmp+=direct[i];
                             }
                             break;
                         }
-                        else if (table[step]==' ')
-                        {
-                            break;
-                        }
+                        else if (c_table[step]==' ') break;
                     }
                 }
             }
         }
-
+        return c_table;
     }
     private boolean stepforward(int ind,int dir)
     {

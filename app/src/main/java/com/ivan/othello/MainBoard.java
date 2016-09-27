@@ -1,5 +1,6 @@
 package com.ivan.othello;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -140,7 +141,8 @@ public class MainBoard extends View{
         int size=setAbleList.length;
         for (int i=0;i<size;i++){
             RectF rect = cellBoard.getRect(setAbleList[i]);
-            buffer.drawOval(rect.left+offset, rect.top + offset, rect.right-offset, rect.bottom-offset, paint);
+            rect.set(rect.left+offset, rect.top + offset, rect.right-offset, rect.bottom-offset);
+            buffer.drawOval(rect, paint);
         }
 
     }
@@ -206,6 +208,7 @@ public class MainBoard extends View{
 
             initialBoardCells();
         }
+        @SuppressLint("ParcelCreator")
         private class Cell extends RectF {
             private int ind;
             public Cell(float left, float top,float right,float bottom,int i){
