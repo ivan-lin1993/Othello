@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 game = new Game(thisContext);
-                mb.drawAllBoard(game.getTable(), game.getSetAbleList(), game.nowPresentCHAR());
+                mb.drawAllBoard(game.getTable(), game.nowPresentCHAR());
                 showText();
             }
         });
@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 game.Regret();
-                mb.drawAllBoard(game.getTable(), game.getSetAbleList(), game.nowPresentCHAR());
+                mb.drawAllBoard(game.getTable(), game.nowPresentCHAR());
                 showText();
             }
         });
@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
             Point size = new Point();
             getScreenSize(size);
             mb.setViewDisplay(size.y, size.x);
-            mb.drawAllBoard(game.getTable(), game.getSetAbleList(), game.nowPresentCHAR());
+            mb.drawAllBoard(game.getTable(), game.nowPresentCHAR());
 
         } else {
             //noinspection deprecation
@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 game = new Game(thisContext);
-                mb.drawAllBoard(game.getTable(), game.getSetAbleList(), game.nowPresentCHAR());
+                mb.drawAllBoard(game.getTable(), game.nowPresentCHAR());
                 showText();
             }
         });
@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 game.Regret();
-                mb.drawAllBoard(game.getTable(), game.getSetAbleList(), game.nowPresentCHAR());
+                mb.drawAllBoard(game.getTable(), game.nowPresentCHAR());
                 showText();
             }
         });
@@ -106,9 +106,9 @@ public class MainActivity extends AppCompatActivity {
         if (event.getAction() == MotionEvent.ACTION_UP) {
             int setID = mb.TouchFunc(event);
             game.play(setID);
-            mb.drawAllBoard(game.getTable(), game.getSetAbleList(), game.nowPresentCHAR());
+            mb.drawAllBoard(game.getTable(), game.nowPresentCHAR());
             showText();
-            if (game.isGameOver()) {
+            if (GameRule.isGameOver(game.getTable(),game.nowPresentCHAR())) {
                 GameOverDialog();
             }
         }
@@ -127,8 +127,8 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void processFinish(Integer output) {
                     //Log.e("result",output.toString());
-                    game.play(game.getSetAbleList()[output]);
-                    mb.drawAllBoard(game.getTable(), game.getSetAbleList(), game.nowPresentCHAR());
+                    game.play(GameRule.getSetableList(game.getTable(),game.nowPresentCHAR()).get(output));
+                    mb.drawAllBoard(game.getTable(), game.nowPresentCHAR());
                     //mb.drawPut(game.getSetAbleList()[output]);
                     showText();
                 }

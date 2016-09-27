@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.ivan.othello.Game;
+import com.ivan.othello.GameRule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,12 +40,12 @@ public class AI_greedy extends AI {
 
         List<Integer> position=new ArrayList<Integer>();
         List<Integer> score=new ArrayList<Integer>();
-        for(int i:game.getSetAbleList()){
+        for(int i: GameRule.getSetableList(origin_table,now_present)){
             position.add(i);
         }
         for(int i:position){
 
-            char []temp=game.Reverse(i,now_present,origin_table.clone());
+            char []temp=GameRule.Reverse(origin_table.clone(),i,now_present);
             temp[i]=now_present;
             Log.e("greedy",String.valueOf(temp));
             score.add(game.showScore(now_present,temp));

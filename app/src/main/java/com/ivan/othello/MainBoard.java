@@ -13,6 +13,8 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
+import java.util.List;
+
 /**
  * Created by Ivan on 2016/6/3.
  */
@@ -59,11 +61,12 @@ public class MainBoard extends View{
         buffer=new Canvas(bitmap);
         calculateLinePlacements();
     }
-    public void drawAllBoard(char []table,int []setalbe,char nowP){
+    public void drawAllBoard(char []table,char nowP){
         try{
             drawBoard();
             drawWB(table);
-            drawCanSet(setalbe,nowP);
+
+            drawCanSet(GameRule.getSetableList(table,nowP),nowP);
         }
         catch (Exception e){
             e.printStackTrace();
@@ -130,7 +133,7 @@ public class MainBoard extends View{
         }
         invalidate();
     }
-    private void drawCanSet(int []setAbleList,char nowPresentCHAR){
+    private void drawCanSet(List <Integer>setAbleList, char nowPresentCHAR){
         float offset=45;
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(15);
@@ -138,9 +141,9 @@ public class MainBoard extends View{
             paint.setColor(Color.WHITE);
         }
         else paint.setColor(Color.BLACK);
-        int size=setAbleList.length;
+        int size=setAbleList.size();
         for (int i=0;i<size;i++){
-            RectF rect = cellBoard.getRect(setAbleList[i]);
+            RectF rect = cellBoard.getRect(setAbleList.get(i));
             rect.set(rect.left+offset, rect.top + offset, rect.right-offset, rect.bottom-offset);
             buffer.drawOval(rect, paint);
         }
