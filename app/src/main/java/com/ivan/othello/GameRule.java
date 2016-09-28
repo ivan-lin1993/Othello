@@ -36,25 +36,64 @@ public class GameRule {
         }
         return table;
     }
-    static public boolean isGameOver(char []table,char color){
+    static public boolean isGameOver(char []table){
         int count=0;
-        char op='B';
-        if (op==color) op='W';
         for(int i=0;i<BOARD_SPACE_NUM;i++){
             if (table[i]!=' ') count+=1;
         }
         if(count==64) return true;
         else{
-            if(getSetableList(table,color).size()==0&&getSetableList(table,op).size()==0) {
+            if(getSetableList(table,'B').size()==0&&getSetableList(table,'W').size()==0) {
                 return true;
             }
         }
         return false;
     }
-    static public int caculateScore(char []table,char color){
+    static public List<Integer> getSetableList(char[] table, char color){
+        char me='W',opp='B';
+        List<Integer> setAble=new ArrayList<>();
+        if(color=='B'){
+            me='B';
+            opp='W';
+        }
+        for (int i=0;i<BOARD_SPACE_NUM;i++){
+            if(table[i]==me){
+                for (int j=0;j<direct.length;j++)
+                {
+                    if(!stepforward(i,j)){
+                        continue;
+                    }
+                    int step=i+direct[j];
+                    if(isInBoard(step))
+                    {
+                        if(table[step]==opp){//自己的下一個為對手色
+                            while(stepforward(step,j))
+                            {
+                                step+=direct[j];
+                                if(isInBoard(step)){
+                                    if(table[step]==' ')
+                                    {
+                                        setAble.add(step);
+                                        //setrevInd.add(step);
+                                        //setrevDir.add(j);
+                                        break;
+                                    }
+                                    else if(table[step]==me) break;//遇到自記就break
+                                }
+                                else break; //沒在棋盤內就break;
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+        return setAble;
+    }
+    static public int showScore(char []table,char color){
         int count=0;
-        for (int i=0;i<64;i++){
-            if(table[i]==color){
+        for(char c:table){
+            if(color==c){
                 count++;
             }
         }
@@ -112,48 +151,8 @@ public class GameRule {
         }
         return false;
     }
-    static public List<Integer> getSetableList(char[] table, char color){
-        char me='W',opp='B';
-        List<Integer> setAble=new ArrayList<>();
-        if(color=='B'){
-            me='B';
-            opp='W';
-        }
-        for (int i=0;i<BOARD_SPACE_NUM;i++){
-            if(table[i]==me){
-                for (int j=0;j<direct.length;j++)
-                {
-                    if(!stepforward(i,j)){
-                        continue;
-                    }
-                    int step=i+direct[j];
-                    if(isInBoard(step))
-                    {
-                        if(table[step]==opp){//自己的下一個為對手色
-                            while(stepforward(step,j))
-                            {
-                                step+=direct[j];
-                                if(isInBoard(step)){
-                                    if(table[step]==' ')
-                                    {
-                                        setAble.add(step);
-                                        //setrevInd.add(step);
-                                        //setrevDir.add(j);
-                                        break;
-                                    }
-                                    else if(table[step]==me) break;//遇到自記就break
-                                }
-                                else break; //沒在棋盤內就break;
-                            }
-                        }
-                    }
-                }
-
-            }
-        }
-        return setAble;
-    }
     static private boolean isInBoard(int ind){
         return ind<64&&ind>=0;
     }
+
 }

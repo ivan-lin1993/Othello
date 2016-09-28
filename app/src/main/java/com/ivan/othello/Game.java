@@ -3,6 +3,8 @@ package com.ivan.othello;
 import android.content.Context;
 import android.widget.Toast;
 
+import com.ivan.othello.test.Table;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,10 +39,14 @@ public class Game {
 //        table[27]='B';
 //        table[32]='W';
 //        table[40]='B';
+
+
         table[27]='W';
         table[36]='W';
         table[28]='B';
         table[35]='B';
+        Table _table=new Table();
+        //_table.talbe2(table);
         gameLog.pushTableToList(table.clone());
         gameLog.pushSideToList(nowPresentB);
     }
@@ -111,7 +117,5 @@ public class Game {
         if(nowPresentB) return 'B';
         else return 'W';
     }
-    public boolean isFill(int ind){
-        return table[ind] != ' ';
-    }
+
 }
