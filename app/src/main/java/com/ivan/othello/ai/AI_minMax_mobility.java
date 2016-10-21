@@ -10,9 +10,10 @@ import com.ivan.othello.Heuristic;
 import java.util.List;
 
 /**
- * Created by Ivan Lin on 2016/9/27.
+ * Created by Ivan Lin on 2016/10/21.
  */
-public class AI_minMax extends AI {
+
+public class AI_minMax_mobility  extends AI {
     private char Max_color='B',min_color='W';
     private int result_ind=0;
     private int search_dept=3;
@@ -28,7 +29,7 @@ public class AI_minMax extends AI {
         }
     }
 
-    public AI_minMax(Context context, AsyncResponse delegate) {
+    public AI_minMax_mobility(Context context, AsyncResponse delegate) {
         super(context, delegate);
     }
     public void setDept(int search_dept){
@@ -62,7 +63,7 @@ public class AI_minMax extends AI {
         Log.e("minMax:resultid",String.valueOf(result_ind));
         return result_ind;
     }
-    private Node minMaxValue(char []table,Node parent,int alpha,int beta,boolean isMax){
+    private Node minMaxValue(char []table, Node parent, int alpha, int beta, boolean isMax){
         Log.e("minMax:a b",String.valueOf(alpha)+" ,"+String.valueOf(beta));
         Log.e("minMax:dept",String.valueOf(parent.dept));
         Log.e("minMax:table",String.valueOf(table));
@@ -74,9 +75,9 @@ public class AI_minMax extends AI {
             char[] temp_table = table.clone();
             List<Integer> list = GameRule.getSetableList(table, Max_color);
             Node best;
-            if(list.size()==0){
-                return minMaxValue(table,parent,alpha,beta,true);
-            }else {
+            if (list.size() == 0) {
+                return parent;
+            } else {
                 best = new Node(parent.dept-1, -999, 0, parent);
             }
             for (int i : list) {
@@ -86,7 +87,7 @@ public class AI_minMax extends AI {
                 Log.e("minMax:child", String.valueOf(childTable));
 
                 //int score= GameRule.showScore(childTable,Max_color);
-                int score= Heuristic.totalScore(childTable,Max_color,AI.gameStage(childTable));
+                int score = Heuristic.totalScore(childTable, Max_color,AI.gameStage(childTable));
                 Log.e("minMaxScore_Max","score"+score+" ,dept:"+(parent.dept-1));
                 Node childnode = new Node(parent.dept - 1, score, i, parent);
                 Node v = minMaxValue(childTable, childnode, alpha, beta, false);
@@ -109,7 +110,7 @@ public class AI_minMax extends AI {
             List<Integer> list = GameRule.getSetableList(table, min_color);
             Node best;
             if(list.size()==0){
-                return minMaxValue(table,parent,alpha,beta,false);
+                return parent;
             }
             else {
                 best=new Node(parent.dept - 1, 999, 0, parent);

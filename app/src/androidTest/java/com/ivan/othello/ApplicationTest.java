@@ -4,6 +4,8 @@ import android.app.Application;
 import android.test.ApplicationTestCase;
 import android.util.Log;
 
+import com.ivan.othello.test.minMaxTest;
+
 import org.junit.Assert;
 
 /**
@@ -11,6 +13,7 @@ import org.junit.Assert;
  */
 public class ApplicationTest extends ApplicationTestCase<Application> {
     Game game;
+    minMaxTest minMaxTest;
     char []temp_table=new char[64];
     public ApplicationTest() {
         super(Application.class);
@@ -57,7 +60,22 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
         setWhiteTable(18,27,36);
         Log.e("gamerule",String.valueOf(GameRule.getSetableList(game.getTable(),'B')));
     }
+    public void testAPI5() throws Exception{
+        initTalbe();
+        setBlackTable(9,27,56,58);
+        setWhiteTable(0,1,8,57);
+        Assert.assertEquals(Heuristic.totalScore(temp_table,'B'),10);
+    }
+    public void testAPI6() throws Exception{
+        initTalbe();
+        setBlackTable(0);
+        setWhiteTable(1,2,3,4,8,16,24);
+    }
+    public void testAPI7() throws Exception{
+        minMaxTest minMaxTest=new minMaxTest();
+        com.ivan.othello.test.minMaxTest.Node node=minMaxTest.MinMax(minMaxTest.root,999,-999,true);
 
+    }
     @Override
     public void tearDown() throws Exception {
         super.tearDown();

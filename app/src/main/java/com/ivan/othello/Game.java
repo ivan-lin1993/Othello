@@ -45,8 +45,10 @@ public class Game {
         table[36]='W';
         table[28]='B';
         table[35]='B';
-        Table _table=new Table();
-        //_table.talbe2(table);
+//        Table _table=new Table();
+//        _table.table4(table);
+
+        //gameReverse Record
         gameLog.pushTableToList(table.clone());
         gameLog.pushSideToList(nowPresentB);
     }

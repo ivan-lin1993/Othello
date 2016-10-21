@@ -133,6 +133,14 @@ public class MainBoard extends View{
         }
         invalidate();
     }
+    public void drawPut(int put){
+        int offset=30;
+        RectF rect = cellBoard.getRect(put);
+        rect.set(rect.left+offset, rect.top + offset, rect.right-offset, rect.bottom-offset);
+        paint.setColor(Color.RED);
+        paint.setStyle(Paint.Style.FILL);
+        buffer.drawOval(rect, paint);
+    }
     private void drawCanSet(List <Integer>setAbleList, char nowPresentCHAR){
         float offset=45;
         paint.setStyle(Paint.Style.STROKE);
@@ -159,40 +167,7 @@ public class MainBoard extends View{
             setID=cellBoard.getCellInd(a, b);
             if(setID!=-1){
                 buffer.drawColor(0, PorterDuff.Mode.CLEAR);
-                //char present=game.getPresent(cellBoard.getCellInd(a,b));
-                //nowAI=!nowAI;
             }
-            /*
-            if(game.isGameOver()){
-                drawScore();
-            }
-            */
-//			if(game.isGameOver()){
-//				Restart();
-//			}
-			/*else if(!game.isGameOver()){
-
-				if(!nowAI){
-					RectF position=cellBoard.getCellToFill(a, b);
-					if(position!=null){
-						char present=game.getPresent(cellBoard.getCellInd(a,b));
-						drawXO(position,present);
-						nowAI=!nowAI;
-					}
-				}
-				//AI turn............
-				if(game.isGameOver()){
-					drawLine();
-				}
-				else if(nowAI) {
-					AIplay();
-
-				}
-				if(game.isGameOver()){
-					drawLine();
-				}
-			}
-			*/
             invalidate();
         }
         return setID;

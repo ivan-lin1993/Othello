@@ -51,7 +51,7 @@ public class AI_greedy extends AI {
             score.add(game.showScore(now_present,temp));
         }
         Log.e("greedy",score.toString());
-        return chooseMax(score);
+        return position.get(chooseMax(score));
     }
     private int chooseMax(List<Integer> list){
         List<Integer> max_list=new ArrayList<>();

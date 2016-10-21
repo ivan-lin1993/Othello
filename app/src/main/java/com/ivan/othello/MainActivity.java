@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
+import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 import com.ivan.othello.ai.AI;
 import com.ivan.othello.ai.AI_greedy;
 import com.ivan.othello.ai.AI_minMax;
+import com.ivan.othello.test.minMaxTest;
 
 public class MainActivity extends AppCompatActivity {
     private Game game;
@@ -82,6 +84,12 @@ public class MainActivity extends AppCompatActivity {
             mb.setViewDisplay(display.getWidth(), display.getHeight());
         }
         showText();
+
+//        test
+//
+//        minMaxTest minMaxTest=new minMaxTest();
+//        com.ivan.othello.test.minMaxTest.Node node=minMaxTest.MinMax(minMaxTest.root,-999,999,true);
+//        Log.e("test End","dept:"+node.dept+" num:"+node.num+" value:"+node.value);
     }
 
     private Display getScreenSize(Point size) {
@@ -164,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
                     //game.play(GameRule.getSetableList(game.getTable(),game.nowPresentCHAR()).get(output));
                     game.play(output);
                     mb.drawAllBoard(game.getTable(), game.nowPresentCHAR());
-                    //mb.drawPut(game.getSetAbleList()[output]);
+                    mb.drawPut(output);
                     showText();
                 }
             });

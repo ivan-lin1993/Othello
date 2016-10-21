@@ -15,6 +15,8 @@ public class AI extends AsyncTask<Game,Void,Integer>{
     protected Integer result=0;
     private ProgressDialog pDialog;
     private String loadstr="Loading...";
+    static public int STAGE1=1,STAGE2=2,STAGE3=3;
+
     public AI(Context context,AsyncResponse delegate){
         thisContext=context;
         this.delegate=delegate;
@@ -41,5 +43,16 @@ public class AI extends AsyncTask<Game,Void,Integer>{
     @Override
     protected Integer doInBackground(Game... params) {
         return null;
+    }
+    public static int gameStage(char []table){
+        int count=0;
+        for (char c:table) {
+            if(c!=' '){
+                count++;
+            }
+        }
+        if(count>54) return STAGE3;
+        else if (count>20) return STAGE2;
+        else return STAGE1;
     }
 }
